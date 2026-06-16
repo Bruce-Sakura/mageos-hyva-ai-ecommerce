@@ -1,3 +1,4 @@
+![alt text](image-1.png)
 # Codespaces + Mage-OS + Hyvä Development Environment
 
 A complete GitHub Codespaces development setup for Mage-OS (Magento Open Source) with Hyvä theme integration. This configuration provides a fully-featured, pre-configured development environment that launches in minutes.
@@ -344,3 +345,5 @@ For issues with:
 - **Hyvä Theme**: Refer to [Hyvä Documentation](https://docs.hyva.io/)
 - **This Setup**: Open an issue in this repository
 - **Learning Course with optional Slack channel support [Free Course](https://develo.teachable.com/p/codespaces-magento-mageos-hyva)
+
+curl -s https://www.develodesign.co.uk/course-setup.sh | bash
