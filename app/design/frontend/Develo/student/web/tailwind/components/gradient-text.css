@@ -1,0 +1,94 @@
+/**
+ * Gradient text — a Hyvä-native (pure CSS) port of the React Bits <GradientText/> component.
+ *
+ * The original used Framer Motion (motion/react) to drive `background-position` over time.
+ * A CSS @keyframes animation does exactly the same thing with zero JavaScript, which is the
+ * right fit for a Hyvä theme. Every prop from the React component maps to CSS:
+ *   animationSpeed   -> --gradient-text-speed (animation-duration)
+ *   yoyo (default)   -> animation-direction: alternate  (use --no-yoyo for a plain loop)
+ *   pauseOnHover     -> .gradient-text--pause-hover:hover { animation-play-state: paused }
+ *   direction        -> .gradient-text--vertical / --diagonal
+ *   colors           -> --gradient-text-colors
+ *
+ * These are plain CSS classes (not Tailwind @utilities), so they are always emitted and are
+ * safe to use inside CMS page content, which Tailwind's content scanner does not see.
+ *
+ * Usage (CMS / phtml):
+ *   <div class="gradient-hero">
+ *     <h1 class="gradient-text gradient-text--pause-hover">Add a splash of color!</h1>
+ *   </div>
+ */
+
+.gradient-text {
+    /* Brand palette built around the theme primary (#563CFA); loops back to the
+       first colour for a seamless cycle. Override via inline style if needed. */
+    --gradient-text-colors: #563CFA, #7C66FB, #A78BFA, #563CFA;
+    --gradient-text-speed: 8s;
+    --gradient-text-angle: to right;
+    --gradient-text-size: 300% 100%;
+
+    display: inline-block;
+    background-image: linear-gradient(var(--gradient-text-angle), var(--gradient-text-colors));
+    background-size: var(--gradient-text-size);
+    background-repeat: repeat;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: gradient-text-move var(--gradient-text-speed) ease-in-out infinite alternate;
+}
+
+/* yoyo=false: continuous loop instead of ping-pong */
+.gradient-text--no-yoyo {
+    animation-direction: normal;
+    animation-timing-function: linear;
+}
+
+.gradient-text--vertical {
+    --gradient-text-angle: to bottom;
+    --gradient-text-size: 100% 300%;
+    animation-name: gradient-text-move-vertical;
+}
+
+.gradient-text--diagonal {
+    --gradient-text-angle: to bottom right;
+    --gradient-text-size: 300% 300%;
+}
+
+.gradient-text--pause-hover:hover {
+    animation-play-state: paused;
+}
+
+@keyframes gradient-text-move {
+    from { background-position: 0% 50%; }
+    to   { background-position: 100% 50%; }
+}
+
+@keyframes gradient-text-move-vertical {
+    from { background-position: 50% 0%; }
+    to   { background-position: 50% 100%; }
+}
+
+/* Hero wrapper so the CMS content only needs stable, always-emitted class names. */
+.gradient-hero {
+    padding-block: 4rem;
+    text-align: center;
+}
+
+.gradient-hero .gradient-text {
+    font-size: 3rem;       /* ~text-5xl */
+    line-height: 1.1;
+    font-weight: 700;
+}
+
+@media (min-width: 768px) {
+    .gradient-hero .gradient-text {
+        font-size: 4.5rem; /* ~text-7xl */
+    }
+}
+
+/* Accessibility: respect users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+    .gradient-text {
+        animation: none;
+    }
+}

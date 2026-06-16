@@ -1,0 +1,256 @@
+/**
+ * Premium homepage hero + sliders. The dark page base comes from `.theme-dark`
+ * (dark-theme.css); this file only adds the homepage-specific pieces.
+ */
+
+/* ------------------------------------------------------------------ *
+ *  Hero — top-center spotlight onto a background-free product cutout
+ * ------------------------------------------------------------------ */
+.featured-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    /* Full-bleed, exactly one screen tall, flush against the header (no gap) */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-top: 0;
+    margin-bottom: 3rem;
+    min-height: calc(100svh - var(--hero-header-offset, 4.5rem));
+    display: grid;
+    place-items: center;
+    border-radius: 0;
+    background:
+        radial-gradient(120% 90% at 50% -10%, #15151f 0%, #07070b 65%),
+        #07070b;
+    border-bottom: 1px solid rgb(255 255 255 / 6%);
+}
+
+/* Remove the spacing the layout puts above the first content block on the homepage */
+.cms-index-index .column.main,
+.cms-index-index .page-main {
+    padding-top: 0;
+    margin-top: 0;
+}
+
+/* WebGL canvas host — fills the hero behind the content */
+.featured-hero__rays {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.featured-hero__stage {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.4rem;
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 4vw, 3rem) clamp(2.5rem, 5vw, 4rem);
+}
+
+.featured-hero__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.34em;
+    font-size: clamp(0.62rem, 1.6vw, 0.74rem);
+    font-weight: 600;
+    color: hsl(210deg 20% 72%);
+}
+
+/* inherits the Syne heading font */
+.featured-hero__title {
+    font-size: clamp(1.5rem, 6vw, 4rem);
+    line-height: 1.05;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0.25rem 0 0;
+    white-space: nowrap; /* keep on a single line */
+}
+
+/* --- the floating cutout, lit from above --- */
+.featured-hero__product {
+    position: relative;
+    margin: clamp(1rem, 3vw, 2rem) 0 0.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.featured-hero__product-link {
+    display: inline-block;
+    line-height: 0;
+}
+
+/* Clean cutout, no glow/blur behind it */
+.featured-hero__cutout,
+.featured-hero__product img {
+    width: clamp(200px, 42vw, 380px);
+    height: auto;
+    animation: heroFloat 6s ease-in-out infinite;
+}
+
+.featured-hero__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55rem;
+    margin-top: 0.5rem;
+}
+
+.featured-hero__name {
+    font-size: clamp(1.1rem, 3vw, 1.45rem);
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.featured-hero__price {
+    color: hsl(210deg 25% 90%);
+    font-size: 1.15rem;
+}
+
+.featured-hero__price .price {
+    color: #ffffff;
+}
+
+.featured-hero__cta {
+    margin-top: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 2rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    color: #0a0a0f;
+    background: linear-gradient(180deg, #ffffff, #dfe6ee);
+    box-shadow: 0 8px 30px -8px hsl(210deg 30% 80% / 0.5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.featured-hero__cta:hover {
+    transform: translateY(-2px);
+    text-decoration: none;
+    color: #0a0a0f;
+    box-shadow: 0 12px 40px -8px hsl(210deg 40% 85% / 0.6);
+}
+
+@keyframes heroFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .featured-hero__cutout,
+    .featured-hero__product img {
+        animation: none;
+    }
+}
+
+/* ------------------------------------------------------------------ *
+ *  Slider cards
+ * ------------------------------------------------------------------ */
+.cms-index-index .product-slider .border-glow-card {
+    --border-radius: 16px;
+}
+
+.cms-index-index .product-slider .border-glow-inner {
+    padding: 0.75rem;
+}
+
+/* ------------------------------------------------------------------ *
+ *  "Customers also chose" floating rail (product page, right side)
+ * ------------------------------------------------------------------ */
+.also-rail {
+    position: fixed;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 45;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+.also-rail__toggle {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 46px;
+    border-radius: 9px;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    background: rgb(13 13 21 / 0.6);
+    backdrop-filter: blur(10px);
+    color: #cbd5e1;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+}
+.also-rail__panel {
+    width: 170px;
+    padding: 0.9rem 0.7rem;
+    border-radius: 16px;
+    color: #e5e7eb;
+    background: rgb(13 13 21 / 0.62);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid rgb(255 255 255 / 0.08);
+    box-shadow: 0 20px 50px -20px rgb(0 0 0 / 0.65);
+}
+.also-rail__head {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: hsl(210deg 20% 72%);
+    text-align: center;
+    margin-bottom: 0.7rem;
+}
+.also-rail__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+.also-rail__item a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.2rem;
+}
+.also-rail__media {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    height: 76px;
+}
+.also-rail__media img {
+    max-height: 76px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+}
+.also-rail__name {
+    font-size: 0.72rem;
+    line-height: 1.2;
+    color: #cbd5e1;
+}
+.also-rail__price {
+    font-size: 0.78rem;
+    color: #ffffff;
+}
+.also-rail__price .price { color: #ffffff; }
+
+@media (max-width: 1024px) {
+    .also-rail { display: none; } /* a fixed side rail doesn't fit small screens */
+}
+
+/* Background-free cutout image used inside the standard product card (item.phtml) */
+.cutout-img {
+    max-height: 220px;
+    width: auto;
+    max-width: 100%;
+    margin-inline: auto;
+    object-fit: contain;
+}
+.theme-dark .cutout-img {
+    filter: drop-shadow(0 14px 20px rgb(0 0 0 / 0.5));
+}

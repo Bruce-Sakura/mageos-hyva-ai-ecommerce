@@ -1,0 +1,106 @@
+<?php
+/**
+ * "Customers also chose" floating rail on the product page (right side).
+ * Uses related → upsell products, falling back to other products from the same
+ * category. Product images use the background-free cutout when available.
+ */
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductList;
+use Hyva\Theme\ViewModel\ProductListItem;
+use Hyva\Theme\ViewModel\Store;
+use Magento\Catalog\Block\Product\View;
+use Magento\Framework\Escaper;
+
+/** @var View $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+$product = $block->getProduct();
+if (!$product) {
+    return;
+}
+
+/** @var ProductList $productListVm */
+$productListVm = $viewModels->require(ProductList::class);
+/** @var ProductListItem $productListItemVm */
+$productListItemVm = $viewModels->require(ProductListItem::class);
+/** @var Store $storeVm */
+$storeVm = $viewModels->require(Store::class);
+
+$items = [];
+foreach (['related', 'upsell'] as $type) {
+    $items = $productListVm->getLinkedItems($type, $product);
+    if ($items) {
+        break;
+    }
+}
+if (!$items) {
+    // Fallback: other products from the same category
+    $categoryIds = $product->getCategoryIds();
+    if ($categoryIds) {
+        $productListVm->setPageSize(8);
+        $productListVm->addFilter('category_id', $categoryIds, 'in');
+        $productListVm->addFilter('website_id', $storeVm->getWebsiteId());
+        $items = $productListVm->getItems();
+    }
+}
+
+$recommended = [];
+foreach ($items as $candidate) {
+    if ((int) $candidate->getId() === (int) $product->getId()) {
+        continue;
+    }
+    $recommended[] = $candidate;
+    if (count($recommended) >= 4) {
+        break;
+    }
+}
+if (!$recommended) {
+    return;
+}
+
+$mediaBase = rtrim($storeVm->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA), '/');
+?>
+<aside class="also-rail" x-data="{ open: true }" x-cloak>
+    <button type="button" class="also-rail__toggle" @click="open = !open"
+            :aria-expanded="open ? 'true' : 'false'"
+            aria-label="<?= $escaper->escapeHtmlAttr(__('Recommended products')) ?>">
+        <span x-text="open ? '›' : '‹'">›</span>
+    </button>
+    <div class="also-rail__panel" x-show="open" x-transition.opacity>
+        <p class="also-rail__head"><?= $escaper->escapeHtml(__('Customers also chose')) ?></p>
+        <ul class="also-rail__list">
+            <?php foreach ($recommended as $rec): ?>
+                <?php
+                $cutoutUrl = '';
+                $smallImage = (string) $rec->getData('small_image');
+                if ($smallImage && $smallImage !== 'no_selection') {
+                    $pngRel = preg_replace('/\.(jpe?g|gif|png)$/i', '.png', $smallImage);
+                    if (is_file(BP . '/pub/media/catalog/product' . $pngRel)) {
+                        $cutoutUrl = $mediaBase . '/catalog/product' . $pngRel;
+                    }
+                }
+                ?>
+                <li class="also-rail__item">
+                    <a href="<?= $escaper->escapeUrl($rec->getProductUrl()) ?>"
+                       title="<?= $escaper->escapeHtmlAttr($rec->getName()) ?>">
+                        <span class="also-rail__media">
+                            <?php if ($cutoutUrl): ?>
+                                <img src="<?= $escaper->escapeUrl($cutoutUrl) ?>"
+                                     alt="<?= $escaper->escapeHtmlAttr($rec->getName()) ?>" loading="lazy" />
+                            <?php elseif ($img = $block->getImage($rec, 'product_small_image')): ?>
+                                <?= /* @noEscape */ $img->toHtml() ?>
+                            <?php endif; ?>
+                        </span>
+                        <span class="also-rail__name"><?= $escaper->escapeHtml($rec->getName()) ?></span>
+                        <span class="also-rail__price">
+                            <?= /* @noEscape */ $productListItemVm->getProductPriceHtml($rec) ?>
+                        </span>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+</aside>

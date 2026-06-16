@@ -1,0 +1,108 @@
+/**
+ * Storefront dark theme.
+ *
+ * Applied only on browsing pages via the `theme-dark` body class
+ * (homepage, category, product, CMS) — checkout, cart and account keep the
+ * default light theme. Hyvä uses hardcoded light utilities (bg-white,
+ * text-gray-900, …) far more than semantic tokens, so the practical approach is
+ * to remap those neutral utilities to dark equivalents, scoped under
+ * `.theme-dark` so nothing leaks onto the light pages.
+ */
+
+body.theme-dark {
+    background-color: #0a0a0f;
+    color: #e5e7eb;
+
+    /* Semantic tokens (used by the handful of token-aware templates) */
+    --color-bg: #0a0a0f;
+    --color-fg: #f1f5f9;
+    --color-fg-secondary: #94a3b8;
+    --color-surface: #101018;
+}
+
+.theme-dark .page-wrapper,
+.theme-dark .page-main,
+.theme-dark main {
+    background: transparent;
+}
+
+/* --- Surfaces --- */
+.theme-dark .bg-white,
+.theme-dark .bg-gray-50 { background-color: #101018 !important; }
+.theme-dark .bg-gray-100 { background-color: #15151f !important; }
+.theme-dark .bg-gray-200 { background-color: #1f1f2b !important; }
+.theme-dark .bg-gray-800,
+.theme-dark .bg-gray-900,
+.theme-dark .bg-black { background-color: #07070b !important; }
+
+/* --- Text --- */
+.theme-dark .text-black,
+.theme-dark .text-gray-900,
+.theme-dark .text-gray-800 { color: #f1f5f9 !important; }
+.theme-dark .text-gray-700,
+.theme-dark .text-gray-600 { color: #cbd5e1 !important; }
+.theme-dark .text-gray-500,
+.theme-dark .text-gray-400 { color: #94a3b8 !important; }
+
+/* --- Borders & dividers --- */
+.theme-dark .border-gray-100,
+.theme-dark .border-gray-200,
+.theme-dark .border-gray-300 { border-color: #262633 !important; }
+.theme-dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]),
+.theme-dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) { border-color: #262633 !important; }
+
+/* --- Header & footer (commonly bg-white) --- */
+.theme-dark header,
+.theme-dark footer,
+.theme-dark .header.content,
+.theme-dark .footer.content {
+    background-color: #0a0a0f;
+}
+
+/* --- Form controls --- */
+.theme-dark :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
+    background-color: #15151f;
+    color: #f1f5f9;
+    border-color: #2a2a37;
+}
+.theme-dark ::placeholder { color: #6b7280; }
+
+/* --- Product cards wrapped in BorderGlow read dark too --- */
+.theme-dark .border-glow-card {
+    --card-bg: #101018;
+    border-color: transparent; /* no white hairline border inside the card */
+}
+.theme-dark .border-glow-inner {
+    background: #101018;
+    border: 0;
+}
+
+/* Hyvä .card defaults its border to gray-300 (reads white on dark) — kill it */
+.theme-dark .card {
+    --card-stroke: transparent;
+    --card-bg: #101018;
+    border-color: transparent;
+}
+
+/* Keep images crisp against the dark backdrop (avoid white image boxes) */
+.theme-dark .product-image-container,
+.theme-dark .product-image-wrapper { background: transparent !important; }
+
+/* --- Floating frosted-glass header: rounded, blurred, slightly shorter --- */
+.theme-dark #header {
+    position: sticky;
+    top: 0.6rem;
+    z-index: 50;
+    margin: 0.6rem 0.75rem 0;
+    border-radius: 18px;
+    background: rgb(13 13 21 / 0.55) !important;
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid rgb(255 255 255 / 0.08);
+    box-shadow: 0 12px 34px -14px rgb(0 0 0 / 0.7);
+}
+/* trim the header height a little */
+.theme-dark #header > .container {
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
+}

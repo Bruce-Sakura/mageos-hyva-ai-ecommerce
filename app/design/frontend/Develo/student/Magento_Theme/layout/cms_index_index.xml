@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!--
+    Premium homepage: LightRays spotlight hero + BorderGlow product sliders.
+    Overrides the parent Hyva/default demo homepage.
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="hyva_product_slider"/>
+    <head>
+        <!-- LightRays (WebGL) + BorderGlow Alpine components -->
+        <script src="js/premium-effects.js"/>
+    </head>
+    <body>
+        <attribute name="class" value="theme-dark"/>
+        <referenceContainer name="content">
+            <!-- Entry invite/referral modal (teleports to body; shown once per session) -->
+            <block name="invite.modal" template="Magento_Theme::html/invite-modal.phtml"/>
+
+            <!-- Drop the inherited demo hero + demo sliders -->
+            <referenceBlock name="hero" remove="true"/>
+            <referenceBlock name="slider-1" remove="true"/>
+            <referenceBlock name="slider-2" remove="true"/>
+
+            <!-- Spotlight hero featuring one product (configurable SKU) -->
+            <block class="Magento\Catalog\Block\Product\ListProduct"
+                   name="featured.hero"
+                   template="Magento_Theme::elements/featured-hero.phtml"
+                   before="-">
+                <arguments>
+                    <argument name="featured_sku" xsi:type="string">24-MG01</argument>
+                    <argument name="cutout_image" xsi:type="string">images/featured/endurance-watch.png</argument>
+                </arguments>
+            </block>
+
+            <!-- Watches slider with BorderGlow cards -->
+            <block name="premium-slider-watches"
+                   template="Magento_Catalog::product/slider/product-slider.phtml"
+                   after="featured.hero">
+                <arguments>
+                    <argument name="title" xsi:type="string" translate="true">Watches</argument>
+                    <argument name="category_ids" xsi:type="string">6</argument>
+                    <argument name="page_size" xsi:type="string">8</argument>
+                    <argument name="border_glow" xsi:type="boolean">true</argument>
+                </arguments>
+            </block>
+
+            <!-- Featured pieces slider with BorderGlow cards -->
+            <block name="premium-slider-featured"
+                   template="Magento_Catalog::product/slider/product-slider.phtml"
+                   after="premium-slider-watches">
+                <arguments>
+                    <argument name="title" xsi:type="string" translate="true">Featured Pieces</argument>
+                    <argument name="page_size" xsi:type="string">8</argument>
+                    <argument name="sort_attribute" xsi:type="string">price</argument>
+                    <argument name="sort_direction" xsi:type="string">DESC</argument>
+                    <argument name="border_glow" xsi:type="boolean">true</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+        <referenceBlock name="page.main.title" remove="true"/>
+    </body>
+</page>

@@ -1,0 +1,97 @@
+<?php
+/**
+ * Premium homepage hero — a top-center LightRays spotlight shining down onto a
+ * single featured product whose image is presented as a background-free cutout
+ * (web/images/featured/<sku>.png), floating directly under the light.
+ *
+ * Fully responsive: a single centered column that scales with clamp().
+ *
+ * Layout XML arguments:
+ *   featured_sku   — SKU to feature (default 24-MG01)
+ *   cutout_image   — theme image path of the cut-out PNG (optional; falls back to
+ *                    the catalog image when absent)
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductList;
+use Hyva\Theme\ViewModel\ProductListItem;
+use Hyva\Theme\ViewModel\Store;
+use Magento\Catalog\Block\Product\ListProduct;
+use Magento\Framework\Escaper;
+
+/** @var ListProduct $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+$featuredSku = (string) ($block->getData('featured_sku') ?: '24-MG01');
+$cutoutPath  = (string) ($block->getData('cutout_image') ?: '');
+
+/** @var ProductList $productListViewModel */
+$productListViewModel = $viewModels->require(ProductList::class);
+/** @var ProductListItem $productListItemViewModel */
+$productListItemViewModel = $viewModels->require(ProductListItem::class);
+/** @var Store $storeViewModel */
+$storeViewModel = $viewModels->require(Store::class);
+
+$productListViewModel->setPageSize(1);
+$productListViewModel->addFilter('sku', [$featuredSku], 'in');
+$productListViewModel->addFilter('website_id', $storeViewModel->getWebsiteId());
+
+// getItems() returns products keyed by entity id, not zero-indexed — take the first.
+$items = $productListViewModel->getItems();
+$product = $items ? reset($items) : null;
+
+// Prefer the background-free cutout; fall back to the catalog image.
+$cutoutUrl = $cutoutPath ? $block->getViewFileUrl($cutoutPath) : '';
+
+$rayOptions = json_encode([
+    'raysOrigin'     => 'top-center',
+    'raysColor'      => '#ffffff',
+    'raysSpeed'      => 1.2,
+    'lightSpread'    => 0.62,
+    'rayLength'      => 1.4,
+    'followMouse'    => true,
+    'mouseInfluence' => 0.1,
+    'noiseAmount'    => 0.06,
+    'distortion'     => 0.03,
+], JSON_THROW_ON_ERROR);
+?>
+<section class="featured-hero featured-hero--spotlight">
+    <div class="featured-hero__rays light-rays-container"
+         x-data='lightRays(<?= /* @noEscape */ $rayOptions ?>)'></div>
+
+    <div class="featured-hero__stage">
+        <p class="featured-hero__eyebrow"><?= $escaper->escapeHtml(__('New Collection')) ?></p>
+        <h1 class="featured-hero__title"><?= $escaper->escapeHtml(__('Under the spotlight')) ?></h1>
+
+        <?php if ($product): ?>
+            <div class="featured-hero__product">
+                <a class="featured-hero__product-link"
+                   href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
+                   title="<?= $escaper->escapeHtmlAttr($product->getName()) ?>">
+                    <?php if ($cutoutUrl): ?>
+                        <img class="featured-hero__cutout"
+                             src="<?= $escaper->escapeUrl($cutoutUrl) ?>"
+                             alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>"
+                             width="380" height="471" loading="eager" />
+                    <?php elseif ($image = $block->getImage($product, 'product_page_image_medium')): ?>
+                        <?= /* @noEscape */ $image->toHtml() ?>
+                    <?php endif; ?>
+                </a>
+            </div>
+
+            <div class="featured-hero__meta">
+                <span class="featured-hero__name"><?= $escaper->escapeHtml($product->getName()) ?></span>
+                <div class="featured-hero__price">
+                    <?= /* @noEscape */ $productListItemViewModel->getProductPriceHtml($product) ?>
+                </div>
+                <a class="featured-hero__cta" href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>">
+                    <?= $escaper->escapeHtml(__('Shop now')) ?>
+                    <span aria-hidden="true">&rarr;</span>
+                </a>
+            </div>
+        <?php endif; ?>
+    </div>
+</section>

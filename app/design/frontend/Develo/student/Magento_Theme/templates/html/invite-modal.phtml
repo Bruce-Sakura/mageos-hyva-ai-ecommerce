@@ -1,0 +1,65 @@
+<?php
+/**
+ * Entry "invite & earn" modal — shown once per browsing session.
+ * Behaviour lives in the `inviteModal` Alpine component (web/js/premium-effects.js).
+ */
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+?>
+<div x-data="inviteModal()" x-cloak>
+    <template x-teleport="body">
+        <div x-show="open"
+             x-transition.opacity
+             class="invite-overlay"
+             @keydown.escape.window="close()"
+             role="dialog"
+             aria-modal="true"
+             aria-label="<?= $escaper->escapeHtmlAttr(__('Invite friends and earn £50')) ?>">
+            <div class="invite-modal" @click.outside="close()">
+                <button type="button" class="invite-close" @click="close()"
+                        aria-label="<?= $escaper->escapeHtmlAttr(__('Close')) ?>">&times;</button>
+
+                <p class="invite-eyebrow"><?= $escaper->escapeHtml(__('Limited offer')) ?></p>
+                <h2 class="invite-title">
+                    <?= $escaper->escapeHtml(__('Invite friends, get')) ?> <span>&pound;50</span>
+                </h2>
+                <p class="invite-text">
+                    <?= $escaper->escapeHtml(__(
+                        'Share your personal link. When a friend places their first order, you both receive £50 credit.'
+                    )) ?>
+                </p>
+
+                <div class="invite-link">
+                    <input type="text" readonly x-ref="linkInput" :value="link"
+                           class="invite-link__input"
+                           aria-label="<?= $escaper->escapeHtmlAttr(__('Your invite link')) ?>" />
+                    <button type="button" class="invite-link__btn" @click="copy()"
+                            x-text="copied ? '<?= $escaper->escapeJs(__('Copied!')) ?>' : '<?= $escaper->escapeJs(__('Copy link')) ?>'">
+                        <?= $escaper->escapeHtml(__('Copy link')) ?>
+                    </button>
+                </div>
+
+                <button type="button" class="invite-share" x-show="canShare" @click="share()">
+                    <?= $escaper->escapeHtml(__('Share with friends')) ?>
+                </button>
+
+                <div class="invite-progress" aria-live="polite">
+                    <div class="invite-progress__head">
+                        <span><?= $escaper->escapeHtml(__('Unlocking your reward…')) ?></span>
+                        <span x-text="progress.toFixed(1) + '%'">99.8%</span>
+                    </div>
+                    <div class="invite-progress__track">
+                        <div class="invite-progress__fill" :style="`width: ${progress}%`"></div>
+                    </div>
+                </div>
+
+                <button type="button" class="invite-dismiss" @click="close()">
+                    <?= $escaper->escapeHtml(__('Maybe later')) ?>
+                </button>
+            </div>
+        </div>
+    </template>
+</div>

@@ -1,0 +1,153 @@
+/**
+ * Entry "invite & earn" modal — premium dark glass, matches the platinum theme.
+ */
+[x-cloak] { display: none !important; }
+
+.invite-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgb(5 5 9 / 0.72);
+    backdrop-filter: blur(6px);
+}
+
+.invite-modal {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    padding: clamp(1.75rem, 5vw, 2.5rem);
+    border-radius: 22px;
+    color: #e5e7eb;
+    text-align: center;
+    background:
+        radial-gradient(120% 80% at 50% -10%, #1a1a26 0%, #0d0d15 60%),
+        #0d0d15;
+    border: 1px solid rgb(255 255 255 / 10%);
+    box-shadow:
+        0 40px 80px -20px rgb(0 0 0 / 0.7),
+        inset 0 1px 0 0 rgb(255 255 255 / 8%);
+}
+
+.invite-close {
+    position: absolute;
+    top: 0.9rem;
+    right: 1.1rem;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: #9ca3af;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+.invite-close:hover { color: #fff; }
+
+.invite-eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: hsl(210deg 20% 72%);
+    margin-bottom: 0.6rem;
+}
+
+.invite-title {
+    font-size: clamp(1.6rem, 5vw, 2.1rem);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+}
+.invite-title span {
+    background: linear-gradient(180deg, #ffffff, hsl(210deg 30% 80%));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.invite-text {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: #cbd5e1;
+    margin-bottom: 1.5rem;
+}
+
+.invite-link {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+.invite-link__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0.7rem 0.9rem;
+    border-radius: 10px;
+    background: #15151f;
+    border: 1px solid #2a2a37;
+    color: #e5e7eb;
+    font-size: 0.85rem;
+}
+.invite-link__btn {
+    flex: 0 0 auto;
+    padding: 0.7rem 1.1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    color: #0a0a0f;
+    background: linear-gradient(180deg, #ffffff, #dfe6ee);
+    border: 0;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+.invite-link__btn:hover { transform: translateY(-1px); }
+
+.invite-share {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    color: #e5e7eb;
+    background: transparent;
+    border: 1px solid #2a2a37;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+.invite-share:hover { border-color: hsl(210deg 25% 60%); color: #fff; }
+
+.invite-progress {
+    margin-top: 0.5rem;
+    text-align: left;
+}
+.invite-progress__head {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #cbd5e1;
+    margin-bottom: 0.45rem;
+}
+.invite-progress__track {
+    height: 8px;
+    border-radius: 9999px;
+    background: #20202c;
+    overflow: hidden;
+}
+.invite-progress__fill {
+    height: 100%;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, hsl(210deg 24% 70%), #ffffff);
+}
+
+.invite-dismiss {
+    margin-top: 1.25rem;
+    font-size: 0.85rem;
+    color: #8b93a1;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+.invite-dismiss:hover { color: #cbd5e1; text-decoration: underline; }
