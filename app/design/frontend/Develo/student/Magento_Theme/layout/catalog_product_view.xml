@@ -4,5 +4,10 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <attribute name="class" value="theme-dark"/>
+        <referenceContainer name="content">
+            <block class="Magento\Catalog\Block\Product\View"
+                   name="also.bought.rail"
+                   template="Magento_Catalog::product/view/also-bought-rail.phtml"/>
+        </referenceContainer>
     </body>
 </page>

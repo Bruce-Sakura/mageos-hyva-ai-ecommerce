@@ -37,11 +37,13 @@ foreach (['related', 'upsell'] as $type) {
     }
 }
 if (!$items) {
-    // Fallback: other products from the same category
+    // Fallback: other products from the most specific (deepest) category the
+    // product belongs to — max id is a good proxy for the leaf category in the
+    // sample data (e.g. Watches=6 over its parent Gear=3).
     $categoryIds = $product->getCategoryIds();
     if ($categoryIds) {
         $productListVm->setPageSize(8);
-        $productListVm->addFilter('category_id', $categoryIds, 'in');
+        $productListVm->addFilter('category_id', (int) max($categoryIds));
         $productListVm->addFilter('website_id', $storeVm->getWebsiteId());
         $items = $productListVm->getItems();
     }
